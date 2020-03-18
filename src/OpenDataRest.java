@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import org.apache.http.client.ClientProtocolException;
@@ -12,7 +11,6 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
-
 import exception.WikipediaNoArcticleException;
 import weather.OpenWeatherMap;
 import wikipedia.MediaWiki;
@@ -49,12 +47,10 @@ public static String RetrieveWikipedia(String city) throws  IOException, Wikiped
     WebResource service = client.resource(UriBuilder.fromUri("https://en.wikipedia.org/w/api.php?action=query&prop=extracts&titles="+city+"&format=json&formatversion=2").build());      
     ObjectMapper mapper = new ObjectMapper(); 
     String json= service.accept(MediaType.APPLICATION_JSON).get(String.class); 
-	if (json.contains("pageid")) {
+    if (json.contains("pageid")) {
 		MediaWiki mediaWiki_obj =  mapper.readValue(json, MediaWiki.class);
 		article= mediaWiki_obj.getQuery().getPages().get(0).getExtract();
-		System.out.println(city+" Wikipedia article: "+article);
-		
-		
+		System.out.println(city+" Wikipedia article: "+article);		
 	} else throw new WikipediaNoArcticleException(city);
 	return article;	 
 }
@@ -69,11 +65,8 @@ public static void main(String[] args) throws ClientProtocolException, IOExcepti
 	BufferedReader stdin=new BufferedReader(new InputStreamReader(System.in));
 	String city="strangename";
 	String article="";
-	//RetrieveWikipedia(city);
-	while (true) {
-		
-		try {
-			
+	while (true) {		
+		try {		
 			article=RetrieveWikipedia(city);
 			break;
 			//RetrieveWikipedia("Athens");
@@ -89,7 +82,7 @@ public static void main(String[] args) throws ClientProtocolException, IOExcepti
 	}
 	String[] criterions = {"museum", "theatre", "sea", "caf", "mountain"};
 	for (int i=0; i<criterions.length;i++) { 
-	System.out.println("The term "+criterions[i]+" exist "+countCriterionfCity(article,criterions[i]) + " number of times.");		
+	System.out.println("The term "+criterions[i]+" occurs "+countCriterionfCity(article,criterions[i]) + " number of times.");		
 	}
 }
 
