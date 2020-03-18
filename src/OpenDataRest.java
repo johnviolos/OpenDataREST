@@ -27,13 +27,13 @@ public class OpenDataRest {
 * @param appid Your API key of the OpenWeatherMap.*/ 	
 public static void RetrieveOpenWeatherMap(String city, String country, String appid) throws JsonParseException, JsonMappingException, IOException {
 	ClientConfig config = new DefaultClientConfig();
-    Client client = Client.create(config);
-    WebResource service = client.resource(UriBuilder.fromUri("http://api.openweathermap.org/data/2.5/weather?q="+city+","+country+"&APPID="+appid+"").build());      
-    ObjectMapper mapper = new ObjectMapper(); 
-    String json= service.accept(MediaType.APPLICATION_JSON).get(String.class);
-    OpenWeatherMap weather_obj = mapper.readValue(json,OpenWeatherMap.class);
-    System.out.println(city+" temperature: " + (weather_obj.getMain()).getTemp());
-   	System.out.println(city+" lat: " + weather_obj.getCoord().getLat()+" lon: " + weather_obj.getCoord().getLon());
+	Client client = Client.create(config);
+	WebResource service = client.resource(UriBuilder.fromUri("http://api.openweathermap.org/data/2.5/weather?q="+city+","+country+"&APPID="+appid+"").build());      
+	ObjectMapper mapper = new ObjectMapper(); 
+	String json= service.accept(MediaType.APPLICATION_JSON).get(String.class);
+	OpenWeatherMap weather_obj = mapper.readValue(json,OpenWeatherMap.class);
+	System.out.println(city+" temperature: " + (weather_obj.getMain()).getTemp());
+	System.out.println(city+" lat: " + weather_obj.getCoord().getLat()+" lon: " + weather_obj.getCoord().getLon());
 }
 
 	
@@ -43,11 +43,11 @@ public static void RetrieveOpenWeatherMap(String city, String country, String ap
 public static String RetrieveWikipedia(String city) throws  IOException, WikipediaNoArcticleException {
 	String article="";
 	ClientConfig config = new DefaultClientConfig();
-    Client client = Client.create(config);
-    WebResource service = client.resource(UriBuilder.fromUri("https://en.wikipedia.org/w/api.php?action=query&prop=extracts&titles="+city+"&format=json&formatversion=2").build());      
-    ObjectMapper mapper = new ObjectMapper(); 
-    String json= service.accept(MediaType.APPLICATION_JSON).get(String.class); 
-    if (json.contains("pageid")) {
+	Client client = Client.create(config);
+	WebResource service = client.resource(UriBuilder.fromUri("https://en.wikipedia.org/w/api.php?action=query&prop=extracts&titles="+city+"&format=json&formatversion=2").build());      
+	ObjectMapper mapper = new ObjectMapper(); 
+	String json= service.accept(MediaType.APPLICATION_JSON).get(String.class); 
+	if (json.contains("pageid")) {
 		MediaWiki mediaWiki_obj =  mapper.readValue(json, MediaWiki.class);
 		article= mediaWiki_obj.getQuery().getPages().get(0).getExtract();
 		System.out.println(city+" Wikipedia article: "+article);		
