@@ -39,12 +39,11 @@ public static void RetrieveOpenWeatherMap(String city, String country, String ap
 }
 
 	
-/**Retrieves weather information, geotag (lan, lon) and a Wikipedia article for a given city using Jersey framework.
+/**Retrieves Wikipedia information, geotag (lan, lon) and a Wikipedia article for a given city using Jersey framework.
 * @param city The Wikipedia article and OpenWeatherMap city. 
-* @param country The country initials (i.e. gr, it, de).
-* @param appid Your API key of the OpenWeatherMap.
  * @throws WikipediaNoArcticleException */ 	
-public static void RetrieveWikipedia(String city) throws  IOException, WikipediaNoArcticleException {
+public static String RetrieveWikipedia(String city) throws  IOException, WikipediaNoArcticleException {
+	String article="";
 	ClientConfig config = new DefaultClientConfig();
     Client client = Client.create(config);
     WebResource service = client.resource(UriBuilder.fromUri("https://en.wikipedia.org/w/api.php?action=query&prop=extracts&titles="+city+"&format=json&formatversion=2").build());      
@@ -52,15 +51,12 @@ public static void RetrieveWikipedia(String city) throws  IOException, Wikipedia
     String json= service.accept(MediaType.APPLICATION_JSON).get(String.class); 
 	if (json.contains("pageid")) {
 		MediaWiki mediaWiki_obj =  mapper.readValue(json, MediaWiki.class);
-		String article= mediaWiki_obj.getQuery().getPages().get(0).getExtract();
+		article= mediaWiki_obj.getQuery().getPages().get(0).getExtract();
 		System.out.println(city+" Wikipedia article: "+article);
 		
-		String[] criterions = {"museum", "theatre", "sea", "caf", "mountain"};
-		for (int i=0; i<criterions.length;i++) { 
-		System.out.println("The term "+criterions[i]+" exist "+countCriterionfCity(article,criterions[i]) + " number of times.");		
-		}
+		
 	} else throw new WikipediaNoArcticleException(city);
-		 
+	return article;	 
 }
 	
 	 
@@ -72,12 +68,13 @@ public static void main(String[] args) throws ClientProtocolException, IOExcepti
 	RetrieveOpenWeatherMap("Berlin","de",appid);
 	BufferedReader stdin=new BufferedReader(new InputStreamReader(System.in));
 	String city="strangename";
+	String article="";
 	//RetrieveWikipedia(city);
 	while (true) {
 		
 		try {
 			
-			RetrieveWikipedia(city);
+			article=RetrieveWikipedia(city);
 			break;
 			//RetrieveWikipedia("Athens");
 			//RetrieveWikipedia("Corfu");
@@ -88,6 +85,11 @@ public static void main(String[] args) throws ClientProtocolException, IOExcepti
 			city = stdin.readLine();
 			continue;
 		}
+		
+	}
+	String[] criterions = {"museum", "theatre", "sea", "caf", "mountain"};
+	for (int i=0; i<criterions.length;i++) { 
+	System.out.println("The term "+criterions[i]+" exist "+countCriterionfCity(article,criterions[i]) + " number of times.");		
 	}
 }
 
