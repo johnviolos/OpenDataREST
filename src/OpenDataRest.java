@@ -57,7 +57,7 @@ public static String RetrieveWikipedia(String city) throws  IOException, Wikiped
 	
 	 
 public static void main(String[] args) throws ClientProtocolException, IOException, WikipediaNoArcticleException{
-	String appid =""; 
+	String appid =""; //Your openweathermap id.
 	RetrieveOpenWeatherMap("Rome","it",appid);	
 	RetrieveOpenWeatherMap("Athens","gr",appid);
 	RetrieveOpenWeatherMap("Corfu","gr",appid);	
